@@ -1,8 +1,9 @@
 Tasks = new Mongo.Collection("tasks");
 
 if (Meteor.isClient) {
-  // This code only runs on the client
+
   Template.body.helpers({
+
     tasks: function () {
       if (Session.get("hideCompleted")) {
         // If hide completed is checked, filter tasks
@@ -12,9 +13,15 @@ if (Meteor.isClient) {
         return Tasks.find({}, {sort: {createdAt: -1}});
       }
     },
+
     hideCompleted: function () {
       return Session.get("hideCompleted");
+    },
+
+    incompleteCount: function () {
+      return Tasks.find({checked: {$ne: true}}).count();
     }
+
   });
 
   Template.body.events({
@@ -24,8 +31,6 @@ if (Meteor.isClient) {
     },
 
     "submit .new-task": function (event) {
-      // This function is called when the new task form is submitted
-
       var text = event.target.text.value;
 
       Tasks.insert({
@@ -44,7 +49,6 @@ if (Meteor.isClient) {
 
   Template.task.events({
     "click .toggle-checked": function () {
-      // Set the checked property to the opposite of its current value
       Tasks.update(this._id, {$set: {checked: ! this.checked}});
     },
     "click .delete": function () {
